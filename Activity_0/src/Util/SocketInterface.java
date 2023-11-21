@@ -9,17 +9,14 @@ import java.net.Socket;
 
 public class SocketInterface {
 
-	ServerSocket serverSocket;
-	Socket guestSocket;
 	boolean verbose;
 	PrintWriter out;
 	BufferedReader inSocket;
 
-	public SocketInterface(Socket cSkt) { // CONTRUCTOR DEL CLIENTE - sin verbose
+	public SocketInterface(Socket cSkt) { // CONTRUCTOR - sin verbose
 		try {
-			this.guestSocket = cSkt;
-			this.out = new PrintWriter(this.guestSocket.getOutputStream(), true);
-			this.inSocket = new BufferedReader(new InputStreamReader(this.guestSocket.getInputStream()));
+			this.out = new PrintWriter(cSkt.getOutputStream(), true);
+			this.inSocket = new BufferedReader(new InputStreamReader(cSkt.getInputStream()));
 			this.verbose = true;
 
 		} catch (IOException e) {
@@ -27,54 +24,18 @@ public class SocketInterface {
 		}
 	}
 
-	public SocketInterface(Socket cSkt, boolean vrbs) { // CONTRUCTOR DEL CLIENTE - con verbose
+	public SocketInterface(Socket cSkt, boolean vrbs) { // CONTRUCTOR - con verbose
 
 		try {
-			this.guestSocket = cSkt;
-			this.out = new PrintWriter(this.guestSocket.getOutputStream(), true);
-			this.inSocket = new BufferedReader(new InputStreamReader(this.guestSocket.getInputStream()));
+			this.out = new PrintWriter(cSkt.getOutputStream(), true);
+			this.inSocket = new BufferedReader(new InputStreamReader(cSkt.getInputStream()));
 			this.verbose = vrbs;
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
-	public SocketInterface(ServerSocket sSkt, Socket cSkt, boolean vrbs) { // CONTRUCTOR DEL SERVIDOR - con verbose
-
-		try {
-
-			this.serverSocket = sSkt;
-			this.guestSocket = cSkt;
-			this.verbose = vrbs;
-
-			this.out = new PrintWriter(this.guestSocket.getOutputStream(), true);
-			inSocket = new BufferedReader(new InputStreamReader(this.guestSocket.getInputStream()));
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-
-	}
-
-	public SocketInterface(ServerSocket sSkt, Socket cSkt) { // CONTRUCTOR DEL SERVIDOR - sin verbose
-
-		try {
-
-			this.serverSocket = sSkt;
-			this.guestSocket = cSkt;
-			this.verbose = true;
-
-			this.out = new PrintWriter(this.guestSocket.getOutputStream(), true);
-			inSocket = new BufferedReader(new InputStreamReader(this.guestSocket.getInputStream()));
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-
-	}
+	
 
 	public void send(String text) {
 		out.println(text);
