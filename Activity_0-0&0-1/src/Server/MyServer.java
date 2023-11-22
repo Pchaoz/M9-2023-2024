@@ -5,18 +5,20 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import Util.SocketInterface;
+import Util.WrongProtocolException;
 
 public class MyServer {
 
 	public static void main(String[] args) {
 
 		SocketInterface skInter;
-		boolean session = false;
+		boolean session = true;
 
 		final String hostName = "127.0.0.1";
 		final int port = 5000;
 
 		String clientMsg = "";
+		String clientOption = "";
 
 		try {
 			ServerSocket sktS = new ServerSocket(port); // CREA EL SERVER SOCKET
@@ -29,20 +31,32 @@ public class MyServer {
 
 			skInter.sendReceive("WELCOME", "OH HI"); // LO SALUDA Y ESPERA QUE EL CLIENTE LO SALUDE DE VUELTA
 
-			while (!session) {
-				clientMsg = skInter.receive(); //RECIBO EL MENSAJE DEL JUGADOR
+			while (session) {
+				clientOption = skInter.receive(); //RECIBO EL MENSAJE DEL JUGADOR
 				
-				if (clientMsg.equals("BBYE")) { //SI ES BYE PROCEDO A CONTESTARLE Y CERRAR LA CONEXION
-					skInter.send("KTHXBYE");
-					skInter.close();
-					session = true;
-				}else {
-					skInter.send(clientMsg);
+				switch (clientOption) {
+				
+					case "1":
+						clientMsg = skInter.receive();
+						if (clientMsg.equals("BBYE"))
+							throw new WrongProtocolException("NO SE PERMITE EL BYE COMO PARABLA NORMAL");
+						skInter.send(clientMsg);
+						break;
+					case "2":
+						clientMsg = skInter.receive();
+						if (!clientMsg.equals("BBYE"))
+							throw new WrongProtocolException("MENSAJE PARA CERRAR LA CONEXION ERRONEO");
+						skInter.send("KTHXBYE");
+						skInter.close();
+						session = false;
 				}
 			}
 
 		} catch (IOException e) {
-
+			e.printStackTrace();
+			
+		} catch (WrongProtocolException e) {
+			e.printStackTrace();
 		}
 	}
 }

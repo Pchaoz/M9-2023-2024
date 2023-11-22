@@ -12,8 +12,9 @@ public class MyClient {
 	public static void main(String[] args) {
 
 		SocketInterface skInter;
-		String userInput = "";
-		boolean session = false;
+		String userOption = "";
+		String userMsg = "";
+		boolean session = true;
 
 		final String hostName = "127.0.0.1";
 		final int port = 5000;
@@ -29,19 +30,22 @@ public class MyClient {
 			System.out.println("SALUDANT AL SERVIDOR..");
 			skInter.send("OH HI"); //SALUDO AL SERVIDOR
 			
-			while (!session) {
+			while (session) {
 				
-				System.out.println("ENVIA ALGO AL SERVIDOR: ");
-				userInput = inConsola.readLine(); // ESCRIBO QUE QUIERO ENVIAR AL SERVIDOR
-
-				if (userInput.equals("BBYE")) {
-					skInter.sendReceive(userInput, "KTHXBYE");
-					skInter.close();
-					session = true;
-					System.out.println("TANCANT SESSIO AMB EL SERVIDOR..");
+				System.out.println("ESCOJE OPCION 1-2: ");
+				userOption = inConsola.readLine(); // ESCRIBO QUE OPCION QUIERO AL SERVIDOR
+				skInter.send(userOption);
+				
+				userMsg = inConsola.readLine(); //ENVIO MI MENSAJE AL SERVIDOR
+				
+				if (!userMsg.equals("BBYE")) {
+					skInter.sendReceive(userMsg, userMsg);
 				}else {
-					skInter.sendReceive(userInput, userInput); //SI NO PILLA LA CONDICION DE ANTES LO ENVIA ESPERANDO A QUE EL SERVIDOR CONTESTE CON SU PROPIO MENSAJE
+					skInter.sendReceive(userMsg, "KTHXBYE");
+					skInter.close();
+					session = false;
 				}
+				
 			}
 
 		} catch (IOException e) {
