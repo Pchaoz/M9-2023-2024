@@ -18,7 +18,6 @@ public class MyServer {
 		final int port = 5000;
 
 		String clientMsg = "";
-		String clientOption = "";
 
 		try {
 			ServerSocket sktS = new ServerSocket(port); // CREA EL SERVER SOCKET
@@ -32,30 +31,18 @@ public class MyServer {
 			skInter.sendReceive("WELCOME", "OH HI"); // LO SALUDA Y ESPERA QUE EL CLIENTE LO SALUDE DE VUELTA
 
 			while (session) {
-				clientOption = skInter.receive(); //RECIBO EL MENSAJE DEL JUGADOR
+				clientMsg = skInter.receive(); //RECIBO EL MENSAJE DEL JUGADOR
 				
-				switch (clientOption) {
-				
-					case "1":
-						clientMsg = skInter.receive();
-						if (clientMsg.equals("BBYE"))
-							throw new WrongProtocolException("NO SE PERMITE EL BYE COMO PARABLA NORMAL");
-						skInter.send(clientMsg);
-						break;
-					case "2":
-						clientMsg = skInter.receive();
-						if (!clientMsg.equals("BBYE"))
-							throw new WrongProtocolException("MENSAJE PARA CERRAR LA CONEXION ERRONEO");
-						skInter.send("KTHXBYE");
-						skInter.close();
-						session = false;
+				if(clientMsg.equals("BBYE")) {
+					skInter.send("KTHXBYE");
+					skInter.close();
+					session = false;
+				}else {
+					skInter.send(clientMsg);
 				}
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
-			
-		} catch (WrongProtocolException e) {
 			e.printStackTrace();
 		}
 	}

@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 import Util.SocketInterface;
+import Util.WrongProtocolException;
 
 public class MyClient {
 
@@ -34,22 +35,27 @@ public class MyClient {
 				
 				System.out.println("ESCOJE OPCION 1-2: ");
 				userOption = inConsola.readLine(); // ESCRIBO QUE OPCION QUIERO AL SERVIDOR
-				skInter.send(userOption);
 				
-				userMsg = inConsola.readLine(); //ENVIO MI MENSAJE AL SERVIDOR
-				
-				if (!userMsg.equals("BBYE")) {
-					skInter.sendReceive(userMsg, userMsg);
-				}else {
-					skInter.sendReceive(userMsg, "KTHXBYE");
-					skInter.close();
-					session = false;
+				switch(userOption) {
+					case "1":
+						userMsg = inConsola.readLine();
+						if (userMsg.equals("BBYE"))
+							throw new WrongProtocolException("NO SE PERMITE EL BYE COMO PARABLA NORMAL");
+						skInter.sendReceive(userMsg, userMsg);
+						break;
+					case "2":
+						skInter.sendReceive("BBYE", "KTHXBYE");
+						skInter.close();
+						session = false;
+						break;
+						
 				}
-				
 			}
 
 		} catch (IOException e) {
-
+			e.printStackTrace();
+		}catch (WrongProtocolException e) {
+			e.printStackTrace();
 		}
 	}
 }
