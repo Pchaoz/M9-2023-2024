@@ -3,6 +3,9 @@ package Util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -14,28 +17,26 @@ public class SocketInterface {
 	boolean verbose;
 	PrintWriter out;
 	BufferedReader inSocket;
+	ObjectOutputStream arrayOutput;
+	ObjectInputStream arrayInput;
 
-	public SocketInterface(Socket cSkt) { // CONTRUCTOR - sin verbose
-		try {
-			this.out = new PrintWriter(cSkt.getOutputStream(), true);
-			this.inSocket = new BufferedReader(new InputStreamReader(cSkt.getInputStream()));
-			this.verbose = true;
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public SocketInterface(Socket cSkt) throws IOException { // CONTRUCTOR - sin verbose
+		
+		out = new PrintWriter(cSkt.getOutputStream(), true);
+		inSocket = new BufferedReader(new InputStreamReader(cSkt.getInputStream()));
+		arrayOutput = new ObjectOutputStream(cSkt.getOutputStream());
+		arrayInput = new ObjectInputStream(cSkt.getInputStream());
+		verbose = true;
+		
 	}
 
-	public SocketInterface(Socket cSkt, boolean vrbs) { // CONTRUCTOR - con verbose
+	public SocketInterface(Socket cSkt, boolean vrbs) throws IOException { // CONTRUCTOR - con verbose
 
-		try {
-			this.out = new PrintWriter(cSkt.getOutputStream(), true);
-			this.inSocket = new BufferedReader(new InputStreamReader(cSkt.getInputStream()));
-			this.verbose = vrbs;
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		out = new PrintWriter(cSkt.getOutputStream(), true);
+		inSocket = new BufferedReader(new InputStreamReader(cSkt.getInputStream()));
+		arrayOutput = new ObjectOutputStream(cSkt.getOutputStream());
+		arrayInput = new ObjectInputStream(cSkt.getInputStream());
+		verbose = vrbs;
 	}
 	
 
@@ -43,34 +44,23 @@ public class SocketInterface {
 		out.println(text);
 	}
 
-	public String receive() {
+	public String receive() throws WrongProtocolException, IOException{
 
 		String rec = "";
-
-		try {
-			rec = inSocket.readLine();
-			System.out.println("HE REBUT: " + rec);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		rec = inSocket.readLine();
+		System.out.println("HE REBUT: " + rec);
 
 		return rec;
 	}
 	
-	public void receive(String text) {
-		String rec = "";
-
-		try {
-			rec = inSocket.readLine();
-			CompareRecive(rec, text);
-			System.out.println("HE REBUT: " + rec);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-
-		} catch (WrongProtocolException e) {
-			e.printStackTrace();
+	public void receive(String text)  throws WrongProtocolException, IOException{
+		String rec = inSocket.readLine();
+		
+		System.out.println(rec + " " + text);
+		if (!rec.equals(text)) {
+			throw new WrongProtocolException("ERROR, ELS VALORS NO COINCIDEIXEN");
 		}
+		System.out.println("HE REBUT: " + rec);
 	}
 
 	public void close() {
@@ -84,7 +74,7 @@ public class SocketInterface {
 		}
 	}
 
-	public String sendReceive(String text) {
+	public String sendReceive(String text) throws WrongProtocolException, IOException {
 		String res = "";
 
 		send(text);
@@ -93,17 +83,11 @@ public class SocketInterface {
 		return res;
 	}
 
-	public void sendReceive(String send, String receive) {
+	public void sendReceive(String send, String receive) throws WrongProtocolException, IOException {
 		String res = "";
 
 		send(send);
 		receive(receive);
 	}
 
-	private void CompareRecive(String rec, String excepted) throws WrongProtocolException {
-
-		if (!rec.equals(excepted)) {
-			throw new WrongProtocolException("ERROR, ELS VALORS NO COINCIDEIXEN");
-		}
-	}
 }

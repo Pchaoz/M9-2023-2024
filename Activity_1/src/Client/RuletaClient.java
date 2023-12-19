@@ -1,34 +1,36 @@
 package Client;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.Scanner;
 
 import Util.SocketInterface;
+import Util.WrongProtocolException;
 
 public class RuletaClient {
 
 	public static void main(String[] args) {
-		SocketInterface skInter;
-		String userInput = "";
+		
+		SocketInterface skInterface;
+		String userInp = "";
 		boolean session = false;
 		
-		final String hostName = "127.0.0.1";
-		final int port = 5000;
+		final String hostname = "10.1.86.25";
+		final int port = 60047;
 		
 		try {
-			Socket skt = new Socket(hostName, port); //CREO EL SOCKET PARA CONECTARME AL SERVIDOR
-			BufferedReader inConsola = new BufferedReader(new InputStreamReader(System.in)); //PARA ENVAR MENSAJES AL SERVIDOR POR CONSOLA
+			System.out.println("CL => INTENTANDO CONECTAR AL SERVIDOR");
+			Socket skt = new Socket(hostname, port);
+			skInterface = new SocketInterface(skt);
+			System.out.println("CL => RECIBIENDO LA BIENVENIDA");
+			skInterface.receive("CYKA BLYATT");
+			System.out.println("CL => CLIENTE CONECTADO CORRECTAMENTE");
 			
-			skInter = new SocketInterface(skt);
-			skInter.receive("ACK"); //CONFIRMO QUE HE RECIVIDO EL SALUDO
 			
-			
-			
-			
-		}catch (IOException e) {
-			
+		}catch(IOException e) {
+			e.printStackTrace();
+		}catch (WrongProtocolException e) {
+			e.printStackTrace();
 		}
 	}
 }
