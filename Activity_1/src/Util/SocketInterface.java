@@ -17,15 +17,15 @@ public class SocketInterface {
 	boolean verbose;
 	PrintWriter out;
 	BufferedReader inSocket;
-	ObjectOutputStream arrayOutput;
-	ObjectInputStream arrayInput;
+	ObjectOutputStream objOut;
+	ObjectInputStream objIn;
 
 	public SocketInterface(Socket cSkt) throws IOException { // CONTRUCTOR - sin verbose
 		
 		out = new PrintWriter(cSkt.getOutputStream(), true);
 		inSocket = new BufferedReader(new InputStreamReader(cSkt.getInputStream()));
-		arrayOutput = new ObjectOutputStream(cSkt.getOutputStream());
-		arrayInput = new ObjectInputStream(cSkt.getInputStream());
+		objOut = new ObjectOutputStream(cSkt.getOutputStream());
+		objIn = new ObjectInputStream(cSkt.getInputStream());
 		verbose = true;
 		
 	}
@@ -34,8 +34,8 @@ public class SocketInterface {
 
 		out = new PrintWriter(cSkt.getOutputStream(), true);
 		inSocket = new BufferedReader(new InputStreamReader(cSkt.getInputStream()));
-		arrayOutput = new ObjectOutputStream(cSkt.getOutputStream());
-		arrayInput = new ObjectInputStream(cSkt.getInputStream());
+		objOut = new ObjectOutputStream(cSkt.getOutputStream());
+		objIn = new ObjectInputStream(cSkt.getInputStream());
 		verbose = vrbs;
 	}
 	
@@ -56,11 +56,20 @@ public class SocketInterface {
 	public void receive(String text)  throws WrongProtocolException, IOException{
 		String rec = inSocket.readLine();
 		
-		System.out.println(rec + " " + text);
 		if (!rec.equals(text)) {
 			throw new WrongProtocolException("ERROR, ELS VALORS NO COINCIDEIXEN");
 		}
 		System.out.println("HE REBUT: " + rec);
+	}
+	
+	public Object recieveOject () throws IOException, ClassNotFoundException {
+		Object o = objIn.readObject();
+		return o;
+	}
+	
+	public void sendObj( Object o ) throws IOException {
+		
+		objOut.writeObject(o);
 	}
 
 	public void close() {
