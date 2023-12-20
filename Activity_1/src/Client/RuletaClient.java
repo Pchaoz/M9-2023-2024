@@ -19,8 +19,12 @@ public class RuletaClient {
 		boolean game = true;
 		boolean round = true;
 		
-		final String hostname = "10.1.86.25";
-		final int port = 60047;
+		//LOCALHOST
+		final String hostname = "127.0.0.1";
+		final int port = 5000;
+		//EL SERVIDOR DEL DAVID
+		//final String hostname = "10.1.86.25";
+		//final int port = 60047;
 		
 		try {
 			System.out.println("CL => INTENTANDO CONECTAR AL SERVIDOR");
@@ -63,6 +67,10 @@ public class RuletaClient {
 					skInterface.sendReceive(userInp, "KURWA");
 					skInterface.close();
 					game = false;
+				}
+				else {
+					skInterface.sendReceive(userInp, "ERROR");
+					skInterface.close();
 				}
  			}
 			

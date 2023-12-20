@@ -77,6 +77,8 @@ public class SocketInterface {
 		try {
 			this.out.close();
 			this.inSocket.close();
+			this.objIn.close();
+			this.objOut.close();
 
 		} catch (IOException e) {
 			e.printStackTrace();
