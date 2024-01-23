@@ -17,8 +17,10 @@ public class RuletaClient {
 		String userInp = "";
 		Scanner kyb = new Scanner(System.in);
 		BinaryMessage bMsg = new BinaryMessage();
-		boolean askNickname = true;
+		boolean asking = true;
+		boolean lobby = true;
 		boolean game = true;
+		boolean finished = false;
 		byte response;
 		
 		//LOCALHOST
@@ -39,7 +41,7 @@ public class RuletaClient {
 			System.out.println("CL => CLIENTE CONECTADO CORRECTAMENTE");
 			skInterface.send(bMsg.ACK);
 			
-			while(askNickname) {
+			while(asking) {
 				System.out.println("CL => PORFAVOR, ESCOJE UN NICKNAME");
 				userInp = kyb.nextLine();
 				skInterface.sendString(userInp);
@@ -49,19 +51,70 @@ public class RuletaClient {
 					System.out.println("CL => NOMBRE ACTUALMENTE EN USO, PORFAVOR ESCRIBE OTRO NOMBRE");
 				else if (response == bMsg.ACK) {
 					System.out.println("CL => NICKNAME CREADO CORRECTAMENTE");
-					askNickname = false;
+					asking = false;
 				}else 
 					throw new WrongProtocolException("SOMETHING WENT WRONG");				
 			}
-			while (game) {
+			while (lobby) {
+				boolean dead = false;
 				response = skInterface.receive();
 				
 				if (response == bMsg.S_ESTAS_DINS) {
 					System.out.println("CL => HAS ENTRADO EN LA PARTIDA");
 					skInterface.send(bMsg.ACK);
 					
-					//PARTIDA
-					response = skInterface.receive();
+					while (game) {
+						//PARTIDA
+						if (!finished) {
+							
+							if (!dead) {
+								response = skInterface.receive();
+								
+								if (response == bMsg.S_BALA) {
+									System.out.println("CL => TE HAN PEGAO UN TIRO, PRINGAO");
+									dead = true;
+									skInterface.send(bMsg.ACK);
+								}else if (response == bMsg.S_NO_BALA) {
+									System.out.println("CL => ESQUIVO ESQUVIO");
+									skInterface.send(bMsg.ACK);
+								}else if (response == bMsg.S_FINALISTA) {
+									System.out.println("CL => HAS GANADO, FACILITO FACILITO JAPONESITO");
+									finished = true;
+								}else {
+									throw new WrongProtocolException("SOMETHING WENT WRONG");	
+								}
+							}
+							
+						}
+					}
+					
+					skInterface.receive(bMsg.S_CONTINUAR);
+					skInterface.send(bMsg.ACK);
+					while (asking) {
+						System.out.println("CL => QUIERES CONTIUAR? ( SI O NO )");
+						userInp = kyb.nextLine().toLowerCase();
+						
+						switch (userInp) {
+							case "si":
+								asking = false;
+								break;
+							
+							case "no":
+								asking = false;
+								break;
+							
+							default:
+								System.out.println("ERES TONTO O QUE, SI O NO");
+								break;
+						}
+					}
+					
+					if (userInp.equals("no")) {
+						lobby = false;
+						skInterface.send(bMsg.C_PLEGAR);
+					}else {
+						skInterface.send(bMsg.C_SEGUIR);
+					}
 				}
 				else if (response == bMsg.S_EN_CURS) {
 					System.out.println("CL => LA PARTIDA YA ESTA EN CURSO");
