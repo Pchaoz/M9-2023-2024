@@ -55,7 +55,7 @@ public class RuletaClient {
 				}else 
 					throw new WrongProtocolException("SOMETHING WENT WRONG");				
 			}
-			while (lobby) {
+			while (lobby)  {
 				boolean dead = false;
 				response = skInterface.receive();
 				
@@ -111,7 +111,7 @@ public class RuletaClient {
 					
 					if (userInp.equals("no")) {
 						lobby = false;
-						skInterface.send(bMsg.C_PLEGAR);
+						skInterface.send(bMsg.C_PLEGAR); 
 					}else {
 						skInterface.send(bMsg.C_SEGUIR);
 					}
