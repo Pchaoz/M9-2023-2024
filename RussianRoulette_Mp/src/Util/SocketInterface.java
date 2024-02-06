@@ -62,13 +62,16 @@ public class SocketInterface {
 		return rec;
 	}
 	
-	public void receive(byte text)  throws WrongProtocolException, IOException{
+	public byte receive(byte text)  throws WrongProtocolException, IOException{
 		byte rec = dataIn.readByte();
 		
 		if (!(text == rec)) {
 			throw new WrongProtocolException("ERROR, ELS VALORS NO COINCIDEIXEN");
 		}
-		System.out.println("HE REBUT: " + rec);
+		if (verbose) 
+			System.out.println("HE REBUT: " + rec);
+		
+		return rec;
 	}
 
 	public void close() {

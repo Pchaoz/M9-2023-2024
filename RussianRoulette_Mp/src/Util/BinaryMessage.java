@@ -39,7 +39,7 @@ public class BinaryMessage {
 			case 0b00001011:
 				return "C_PLEGAR";
 			default:
-				return "WRONG PROTOCOL";
+				return "WRONG BYTE PROTOCOL";
 		}
 	}
 }

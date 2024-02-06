@@ -24,24 +24,26 @@ public class RuletaClient {
 		byte response;
 		
 		//LOCALHOST
-		final String hostname = "127.0.0.1";
-		final int port = 5000;
+		//final String hostname = "127.0.0.1";
+		//final int port = 5000;
 		
 		//EL SERVIDOR DEL DAVID
-		//final String hostname = "10.1.86.25";
-		//final int port = 60047;
+		final String hostname = "10.1.86.25";
+		final int port = 60047;
 		
 		try {
 			
 			System.out.println("CL => INTENTANDO CONECTAR AL SERVIDOR");
 			Socket skt = new Socket(hostname, port);
-			skInterface = new SocketInterface(skt);
+			skInterface = new SocketInterface(skt, true);
 			System.out.println("CL => RECIBIENDO LA BIENVENIDA");
 			skInterface.receive(bMsg.S_BENVINGUT);
 			System.out.println("CL => CLIENTE CONECTADO CORRECTAMENTE");
 			skInterface.send(bMsg.ACK);
 			
 			while(asking) {
+				
+				
 				System.out.println("CL => PORFAVOR, ESCOJE UN NICKNAME");
 				userInp = kyb.nextLine();
 				skInterface.sendString(userInp);
@@ -56,7 +58,6 @@ public class RuletaClient {
 					throw new WrongProtocolException("SOMETHING WENT WRONG");				
 			}
 			while (lobby)  {
-				boolean dead = false;
 				response = skInterface.receive();
 				
 				if (response == bMsg.S_ESTAS_DINS) {
@@ -67,26 +68,25 @@ public class RuletaClient {
 						//PARTIDA
 						if (!finished) {
 							
-							if (!dead) {
-								response = skInterface.receive();
-								
-								if (response == bMsg.S_BALA) {
-									System.out.println("CL => TE HAN PEGAO UN TIRO, PRINGAO");
-									dead = true;
-									skInterface.send(bMsg.ACK);
-								}else if (response == bMsg.S_NO_BALA) {
-									System.out.println("CL => ESQUIVO ESQUVIO");
-									skInterface.send(bMsg.ACK);
-								}else if (response == bMsg.S_FINALISTA) {
-									System.out.println("CL => HAS GANADO, FACILITO FACILITO JAPONESITO");
-									finished = true;
-								}else {
-									throw new WrongProtocolException("SOMETHING WENT WRONG");	
-								}
-							}
+							response = skInterface.receive();
 							
+							if (response == bMsg.S_BALA) {
+								System.out.println("CL => TE HAN PEGAO UN TIRO, PRINGAO");
+								finished = true;
+								skInterface.send(bMsg.ACK);
+							}else if (response == bMsg.S_NO_BALA) {
+								System.out.println("CL => ESQUIVO ESQUVIO");
+								skInterface.send(bMsg.ACK);
+							}else if (response == bMsg.S_FINALISTA) {
+								System.out.println("CL => HAS GANADO, FACILITO FACILITO JAPONESITO");
+								finished = true;
+							}else {
+								throw new WrongProtocolException("SOMETHING WENT WRONG");	
+							}
 						}
 					}
+					
+					//FALTA RECIBIR RESULTADOS
 					
 					skInterface.receive(bMsg.S_CONTINUAR);
 					skInterface.send(bMsg.ACK);
