@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
-import java.util.logging.Handler;
 
 import Util.BinaryMessage;
 import Util.SocketInterface;
@@ -66,7 +65,7 @@ public class Server {
 				}
 				clientes.get(clientes.size()-1).send(bMsg.ACK);
 
-				playersReadyCD.countDown();
+				playersReadyCD.countDown(); //AVISA DE QUE EL CLIENT ESTA PREPARAT
 			}
 
 			
