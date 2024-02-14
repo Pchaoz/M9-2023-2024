@@ -2,7 +2,6 @@ package Client;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Random;
 import java.util.Scanner;
 
 import Util.BinaryMessage;
@@ -24,12 +23,12 @@ public class RuletaClient {
 		byte response;
 		
 		//LOCALHOST
-		//final String hostname = "127.0.0.1";
-		//final int port = 5000;
+		final String hostname = "127.0.0.1";
+		final int port = 60047;
 		
 		//EL SERVIDOR DEL DAVID
-		final String hostname = "10.1.86.25";
-		final int port = 60047;
+		//final String hostname = "10.1.86.25";
+		//final int port = 60047;
 		
 		try {
 			

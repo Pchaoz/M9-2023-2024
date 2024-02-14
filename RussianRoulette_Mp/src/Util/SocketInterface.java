@@ -42,7 +42,7 @@ public class SocketInterface {
 		
 	}
 	
-	public String reciveString(String text) throws IOException {
+	public String reciveString() throws IOException {
 		
 		String str = inText.readLine();
 		return str;
