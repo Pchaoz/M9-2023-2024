@@ -5,6 +5,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -15,6 +17,8 @@ public class SocketInterface {
 	DataInputStream dataIn;
 	PrintWriter outText;
 	BufferedReader inText;
+	ObjectInputStream inObject;
+	ObjectOutputStream outObject;
 	BinaryMessage bnMsg = new BinaryMessage();
 
 	public SocketInterface(Socket cSkt) throws IOException { // CONTRUCTOR - sin verbose
@@ -23,6 +27,8 @@ public class SocketInterface {
 		inText = new BufferedReader(new InputStreamReader(cSkt.getInputStream()));
 		dataOut = new DataOutputStream(cSkt.getOutputStream());
 		dataIn = new DataInputStream(cSkt.getInputStream());
+		inObject = new ObjectInputStream(cSkt.getInputStream());
+		outObject = new ObjectOutputStream(cSkt.getOutputStream());
 		verbose = true;
 	}
 
@@ -32,6 +38,8 @@ public class SocketInterface {
 		inText = new BufferedReader(new InputStreamReader(cSkt.getInputStream()));
 		dataOut = new DataOutputStream(cSkt.getOutputStream());
 		dataIn = new DataInputStream(cSkt.getInputStream());
+		inObject = new ObjectInputStream(cSkt.getInputStream());
+		outObject = new ObjectOutputStream(cSkt.getOutputStream());
 		verbose = vrbs;
 	}
 	
@@ -39,6 +47,18 @@ public class SocketInterface {
 	public void sendString(String text) throws IOException {
 		
 		outText.println(text);
+		
+	}
+	
+	public Object reciveObject() throws IOException, ClassNotFoundException {
+		Object o = null;
+		o = inObject.readObject();
+		return o;
+	}
+
+	public void sendObject(Object o) throws IOException {
+		
+		outObject.writeObject(o);
 		
 	}
 	

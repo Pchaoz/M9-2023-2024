@@ -41,8 +41,7 @@ public class RuletaClient {
 			skInterface.send(bMsg.ACK);
 			
 			while(asking) {
-				
-				
+
 				System.out.println("CL => PORFAVOR, ESCOJE UN NICKNAME");
 				userInp = kyb.nextLine();
 				skInterface.sendString(userInp);
@@ -85,7 +84,16 @@ public class RuletaClient {
 						}
 					}
 					
-					//FALTA RECIBIR RESULTADOS
+					String[] results = (String[]) skInterface.reciveObject();
+					skInterface.send(bMsg.ACK);
+					System.out.println("CL -> IMPRIMIENDO RESULTADOS DE LA PARTIDA");
+					for (int i = 0; i < results.length; i++) {
+						if (i < results.length-1) {
+							System.out.println(i + ": " + results[i]);
+						}else {
+							System.out.println("Ha ganado: " + results[i]);
+						}
+					}
 					
 					skInterface.receive(bMsg.S_CONTINUAR);
 					skInterface.send(bMsg.ACK);
@@ -120,10 +128,13 @@ public class RuletaClient {
 					skInterface.send(bMsg.ACK);
 				}
 			}
+			skInterface.close();
 			
 		}catch(IOException e) {
 			e.printStackTrace();
 		} catch (WrongProtocolException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
