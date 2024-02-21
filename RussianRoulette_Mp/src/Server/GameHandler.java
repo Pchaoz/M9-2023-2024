@@ -10,18 +10,18 @@ public class GameHandler implements Runnable {
 
 	private States state;
 
-	private static final int MIN_PLAYERS = 2;
-	private static final int TIME_TO_START = 5;
+	private static final int MIN_PLAYERS = 2; //MIN PLAYERS TO START THE GAME
+	private static final int TIME_TO_START = 5000; //5 SECONDS
 	
 	private Set<PlayerHandler> playersReady;
 	private Set<PlayerHandler> playersLobby;
-	private Set<PlayerHandler> playersIngame;
+	private Set<PlayerHandler> playersInGame;
 	
 	public GameHandler(){
 
 		playersLobby = new HashSet<PlayerHandler>();
 		playersReady = new HashSet<PlayerHandler>();
-		playersIngame = new HashSet<PlayerHandler>();
+		playersInGame = new HashSet<PlayerHandler>();
 
 		state = States.WAITING_PLAYERS;
 	}
@@ -36,12 +36,12 @@ public class GameHandler implements Runnable {
 			if (playersReady.size() >= MIN_PLAYERS) {
 				System.out.println("TWO PLAYERS READY.. STARTING GAME IN 5 SECONDS!");
 				try {
-					Thread.sleep(TIME_TO_START * 1000); //5 SEGUNDOS
+					Thread.sleep(TIME_TO_START);
 				}catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				System.out.println("STARTING GAME..");
-				playersIngame.addAll(playersReady);
+				playersInGame.addAll(playersReady);
 				playersReady.clear();
 				
 			}
@@ -55,5 +55,14 @@ public class GameHandler implements Runnable {
 		}else if(ph.GetState() == States.WAITING){
 			playersReady.add(ph);
 		}
+	}
+
+	public States GetState() {
+		return this.state;
+	}
+
+	//TODO ESTO ESTA DE PRUEBA SE HA CAMBIAR DESPUES
+	public Boolean CheckNickname(String n) {
+		return true;
 	}
 }

@@ -96,7 +96,7 @@ public class RuletaClient {
 					}
 					
 					skInterface.receive(bMsg.S_CONTINUAR);
-					skInterface.send(bMsg.ACK);
+					skInterface.send(bMsg.ACK);	
 					while (asking) {
 						System.out.println("CL => QUIERES CONTIUAR? ( SI O NO )");
 						userInp = kyb.nextLine().toLowerCase();

@@ -44,10 +44,10 @@ public class PlayerHandler implements Runnable{
 
             sktInter.receive(bMsg.S_BENVINGUT);
             sktInter.send(bMsg.ACK);
-
+            
             while(true) {
                 input = kyb.nextLine();
-                if (!gh.checkNickname()) {
+                if (!gh.CheckNickname(input)) {
                     nickname = input;
                     break;
                 }else {
@@ -58,10 +58,10 @@ public class PlayerHandler implements Runnable{
             while(true) {
 
                 state = States.WAITING;
-                gh.readPlayerStatus()
+                //gh.readPlayerStatus();
 
-                if (gh.getState() == States.WAITING_PLAYERS) {
-                    gh.addPlayer(this);
+                if (gh.GetState() == States.WAITING_PLAYERS) {
+                    gh.AddPlayer(this);
                     
                     sktInter.receive(bMsg.S_ESTAS_DINS);
                     sktInter.send(bMsg.ACK);
@@ -71,12 +71,26 @@ public class PlayerHandler implements Runnable{
                         this.wait();
                     }
                     while(true) {
-                        //LOGICA RECRIBIENDO BALAS
+                        if (sktInter.receive() == bMsg.S_BALA) {
+                            //TE MUERES
+                            System.out.println("CL -> " + Thread.currentThread().getName() +  " HAS RECIBIDO UN BALAZO CRACK");
+                            sktInter.send(bMsg.ACK);
+                            state = States.DEAD;
+                            break;
+                        }else if (sktInter.receive() == bMsg.S_NO_BALA) {
+                            //TE SALVAS
+                            System.out.println("CL -> " + Thread.currentThread().getName() +  " TE SALVAS DE MOMENTO");
+                            sktInter.send(bMsg.ACK);
+                        }else if (sktInter.receive() == bMsg.S_FINALISTA) {
+                            //GANAS LA PARTIDA
+                            System.out.println("CL -> " + Thread.currentThread().getName() +  " HAS GANADO!!");
+                            sktInter.send(bMsg.ACK);
+                            state = States.WINNER;
+                            break;
+                        }
                     }
                 }
             }
-
-            
 
         }catch(IOException e) {
             e.printStackTrace();
