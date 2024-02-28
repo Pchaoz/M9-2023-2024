@@ -23,7 +23,7 @@ public class RuletaClient {
 		byte response;
 		
 		//LOCALHOST
-		final String hostname = "127.0.0.1";
+		final String hostname = "localhost";
 		final int port = 60047;
 		
 		//EL SERVIDOR DEL DAVID

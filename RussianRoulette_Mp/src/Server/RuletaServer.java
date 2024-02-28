@@ -8,6 +8,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import Client.PlayerHandler;
+import Util.BinaryMessage;
+import Util.SocketInterface;
 
 public class RuletaServer {
 	
@@ -15,6 +17,7 @@ public class RuletaServer {
 
 	public static void main(String[] args) {
 		int port = 60047;
+		BinaryMessage bMsg = new BinaryMessage();
 
 		try {
 
@@ -27,6 +30,7 @@ public class RuletaServer {
 
 				//A PLAYER CONNECTS
 				Socket skt = sSkt.accept();
+				SocketInterface skInter = new SocketInterface(skt);
 				PlayerHandler ph = new PlayerHandler(skt, gh);
 				exe.execute(ph);
 				gh.AddPlayer(ph);

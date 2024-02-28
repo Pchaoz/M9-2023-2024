@@ -43,9 +43,8 @@ public class PlayerHandler implements Runnable{
                         + " at port " + skt.getPort() + " and local port " + skt.getLocalPort());
 
             sktInter = new SocketInterface(skt, false);
-
-            sktInter.receive(bMsg.S_BENVINGUT);
-            sktInter.send(bMsg.ACK);
+            sktInter.send(bMsg.S_BENVINGUT);
+            sktInter.receive(bMsg.ACK);
             
             while(true) {
                 input = kyb.nextLine();
