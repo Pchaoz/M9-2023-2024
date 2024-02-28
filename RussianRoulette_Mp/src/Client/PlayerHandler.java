@@ -25,6 +25,8 @@ public class PlayerHandler implements Runnable{
 
     GameHandler gh;
 
+    String[] results;
+
     public PlayerHandler(Socket skt, GameHandler gh) {
         kyb = new Scanner(System.in);
         bMsg = new BinaryMessage();
@@ -96,6 +98,8 @@ public class PlayerHandler implements Runnable{
             e.printStackTrace();
         }catch(WrongProtocolException e) {
             e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
        
     }
@@ -103,5 +107,17 @@ public class PlayerHandler implements Runnable{
     public States GetState() {
         return this.state;
     }
-    
+    public void SetState(States st) {
+        this.state = st;
+    }
+    public String GetNickname() {
+        return this.nickname;
+    }
+    public void SetNickname(String n) {
+        this.nickname = n;
+    }
+
+    public void setResults(String[] r) {
+        this.results = r;
+    }
 }
