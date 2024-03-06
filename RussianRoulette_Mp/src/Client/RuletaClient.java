@@ -11,7 +11,7 @@ import Util.WrongProtocolException;
 public class RuletaClient {
 
 	public static void main(String[] args) {
-		
+
 		SocketInterface skInterface;
 		String userInp = "";
 		Scanner kyb = new Scanner(System.in);
@@ -23,7 +23,7 @@ public class RuletaClient {
 		byte response;
 		
 		//LOCALHOST
-		final String hostname = "localhost";
+		final String hostname = "127.0.0.1";
 		final int port = 60047;
 		
 		//EL SERVIDOR DEL DAVID
@@ -34,7 +34,8 @@ public class RuletaClient {
 			
 			System.out.println("CL => INTENTANDO CONECTAR AL SERVIDOR");
 			Socket skt = new Socket(hostname, port);
-			skInterface = new SocketInterface(skt, true);
+			System.out.println("CL => CREANDO SOCKET INTERFACE..");
+			skInterface = new SocketInterface(skt);
 			System.out.println("CL => RECIBIENDO LA BIENVENIDA");
 			skInterface.receive(bMsg.S_BENVINGUT);
 			System.out.println("CL => CLIENTE CONECTADO CORRECTAMENTE");
@@ -56,6 +57,7 @@ public class RuletaClient {
 					throw new WrongProtocolException("SOMETHING WENT WRONG");				
 			}
 			while (lobby)  {
+				System.out.println("ESTOY EN EL LOBBY");
 				response = skInterface.receive();
 				
 				if (response == bMsg.S_ESTAS_DINS) {

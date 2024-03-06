@@ -23,24 +23,24 @@ public class SocketInterface {
 
 	public SocketInterface(Socket cSkt) throws IOException { // CONTRUCTOR - sin verbose
 		
-		outText = new PrintWriter(cSkt.getOutputStream(), true);
-		inText = new BufferedReader(new InputStreamReader(cSkt.getInputStream()));
-		dataOut = new DataOutputStream(cSkt.getOutputStream());
-		dataIn = new DataInputStream(cSkt.getInputStream());
-		inObject = new ObjectInputStream(cSkt.getInputStream());
-		outObject = new ObjectOutputStream(cSkt.getOutputStream());
-		verbose = true;
+		this.outObject = new ObjectOutputStream(cSkt.getOutputStream());
+		this.inObject = new ObjectInputStream(cSkt.getInputStream());
+		this.dataIn = new DataInputStream(cSkt.getInputStream());
+		this.dataOut = new DataOutputStream(cSkt.getOutputStream());
+		this.inText = new BufferedReader(new InputStreamReader(cSkt.getInputStream()));
+		this.outText = new PrintWriter(cSkt.getOutputStream(), true);
+		this.verbose = false;
 	}
 
 	public SocketInterface(Socket cSkt, boolean vrbs) throws IOException { // CONTRUCTOR - con verbose
 
-		outText = new PrintWriter(cSkt.getOutputStream(), true);
-		inText = new BufferedReader(new InputStreamReader(cSkt.getInputStream()));
-		dataOut = new DataOutputStream(cSkt.getOutputStream());
-		dataIn = new DataInputStream(cSkt.getInputStream());
-		inObject = new ObjectInputStream(cSkt.getInputStream());
-		outObject = new ObjectOutputStream(cSkt.getOutputStream());
-		verbose = vrbs;
+		this.outObject = new ObjectOutputStream(cSkt.getOutputStream());
+		this.inObject = new ObjectInputStream(cSkt.getInputStream());
+		this.dataIn = new DataInputStream(cSkt.getInputStream());
+		this.dataOut = new DataOutputStream(cSkt.getOutputStream());
+		this.inText = new BufferedReader(new InputStreamReader(cSkt.getInputStream()));
+		this.outText = new PrintWriter(cSkt.getOutputStream(), true);
+		this.verbose = vrbs;
 	}
 	
 

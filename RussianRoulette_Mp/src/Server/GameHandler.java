@@ -26,14 +26,13 @@ public class GameHandler implements Runnable {
 		playersReady = new HashSet<PlayerHandler>();
 		playersInGame = new HashSet<PlayerHandler>();
 		playersDead = new HashSet<PlayerHandler>();
-
-		state = States.WAITING_PLAYERS;
 	}
 	
 
 	@Override
 	public void run() {
 		while(true) {
+			state = States.WAITING_PLAYERS;
 			synchronized(playersReady) {
 				playersReady.notify();
 			}
@@ -44,9 +43,13 @@ public class GameHandler implements Runnable {
 				}catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				
 				System.out.println("STARTING GAME..");
+
 				playersInGame.addAll(playersReady);
 				playersReady.clear();
+
+				state = States.INGAME;
 				playGame();
 			}
 		}
@@ -126,19 +129,10 @@ public class GameHandler implements Runnable {
 		Iterator<PlayerHandler> it = playersInGame.iterator();
 		while(it.hasNext()) {
 			PlayerHandler ph = it.next();
+
 			if (ph.GetState() == States.DEAD || ph.GetState() == States.DISCONECTED) {
-				playersInGame.remove(ph);
+				it.remove();
 			}
-		}
-	}
-
-
-	public void AddPlayer(PlayerHandler ph) {
-
-		if (ph.GetState() == States.CREATED) {
-			playersLobby.add(ph);
-		}else if(ph.GetState() == States.WAITING){
-			playersReady.add(ph);
 		}
 	}
 
@@ -146,8 +140,44 @@ public class GameHandler implements Runnable {
 		return this.state;
 	}
 
-	//TODO ESTO ESTA DE PRUEBA SE HA CAMBIAR DESPUES
 	public Boolean CheckNickname(String n) {
-		return true;
+		if(playersInGame.contains(n)) {return true;}
+		if(playersDead.contains(n)) {return true;}
+		if(playersLobby.contains(n)) {return true;}
+		if(playersReady.contains(n)) {return true;}
+		return false;
+			 
+	}
+
+
+	public void readPlayerStatus(String nk) {
+		Iterator<PlayerHandler> it = playersLobby.iterator();
+		while (it.hasNext()) {
+			PlayerHandler ph = it.next();
+			if (ph.GetNickname().equals(nk))  {
+
+				if (ph.GetState() == States.DISCONECTED || ph.GetState() == States.DEAD) {
+					RemoveClient(ph);
+				}else if (ph.GetState() == States.WAITING) {
+					AddPlayer(ph);
+				}
+			}
+		}
+	}
+
+	private void RemoveClient(PlayerHandler ph) {
+		Iterator<PlayerHandler> it = playersLobby.iterator();
+		while (it.hasNext()) {
+			
+		}
+	}
+	
+	public void AddPlayer(PlayerHandler ph) {
+
+		if (ph.GetState() == States.CREATED) {
+			playersLobby.add(ph);
+		}else if(ph.GetState() == States.WAITING){
+			playersReady.add(ph);
+		}
 	}
 }

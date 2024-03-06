@@ -1,7 +1,6 @@
 package Client;
 
 import java.io.IOException;
-import java.io.ObjectInputFilter.Status;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -22,6 +21,7 @@ public class PlayerHandler implements Runnable{
     
     SocketInterface sktInter;
     Socket skt;
+    RuletaClient rcl;
 
     GameHandler gh;
 
@@ -33,6 +33,8 @@ public class PlayerHandler implements Runnable{
 
         this.skt = skt;
         this.gh = gh;
+
+        this.state = States.CREATED;
     }
 
     @Override
@@ -47,7 +49,7 @@ public class PlayerHandler implements Runnable{
             sktInter.receive(bMsg.ACK);
             
             while(true) {
-                input = kyb.nextLine();
+                input = sktInter.reciveString();
                 if (!gh.CheckNickname(input)) {
                     nickname = input;
                     break;
@@ -59,34 +61,38 @@ public class PlayerHandler implements Runnable{
             while(true) {
 
                 state = States.WAITING;
-                //gh.readPlayerStatus();
-
                 if (gh.GetState() == States.WAITING_PLAYERS) {
+
                     gh.AddPlayer(this);
-                    
-                    sktInter.receive(bMsg.S_ESTAS_DINS);
-                    sktInter.send(bMsg.ACK);
+
+                    sktInter.send(bMsg.S_ESTAS_DINS);
+                    sktInter.receive(bMsg.ACK);
+
                     state = States.INGAME;
-                    
                     synchronized (this) {
                         this.wait();
                     }
                     while(true) {
-                        if (sktInter.receive() == bMsg.S_BALA) {
+                        if (state == States.DEAD) {
                             //TE MUERES
                             System.out.println("CL -> " + Thread.currentThread().getName() +  " HAS RECIBIDO UN BALAZO CRACK");
-                            sktInter.send(bMsg.ACK);
-                            state = States.DEAD;
+                            sktInter.send(bMsg.S_BALA);
+                            sktInter.receive();
                             break;
-                        }else if (sktInter.receive() == bMsg.S_NO_BALA) {
+                        }else if (state == States.INGAME) {
                             //TE SALVAS
                             System.out.println("CL -> " + Thread.currentThread().getName() +  " TE SALVAS DE MOMENTO");
-                            sktInter.send(bMsg.ACK);
-                        }else if (sktInter.receive() == bMsg.S_FINALISTA) {
+                            sktInter.send(bMsg.S_NO_BALA);
+                            sktInter.receive();
+                            synchronized (this) {
+								this.wait();
+							}
+
+                        }else if (state == States.WINNER) {
                             //GANAS LA PARTIDA
                             System.out.println("CL -> " + Thread.currentThread().getName() +  " HAS GANADO!!");
-                            sktInter.send(bMsg.ACK);
-                            state = States.WINNER;
+                            sktInter.send(bMsg.S_FINALISTA);
+                            sktInter.receive();
                             break;
                         }
                     }

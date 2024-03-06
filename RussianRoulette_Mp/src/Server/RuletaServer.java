@@ -30,10 +30,9 @@ public class RuletaServer {
 
 				//A PLAYER CONNECTS
 				Socket skt = sSkt.accept();
-				SocketInterface skInter = new SocketInterface(skt);
+				System.out.println("SE HA CONECTADO ALGUIEN");
 				PlayerHandler ph = new PlayerHandler(skt, gh);
 				exe.execute(ph);
-				gh.AddPlayer(ph);
 
 			}
 
